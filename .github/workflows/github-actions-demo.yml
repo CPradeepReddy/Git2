@@ -1,24 +1,26 @@
-name: Deploy Workflow
+name: Github Workflow Demo
 
 on:
   push:
     branches:
-      - main  # Change this to your main branch name
+    - master
 
 jobs:
   deploy:
+    name: Github Workflow actions 
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      # Add steps to build and test your application
-
-      - name: Deploy to AWS
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          
-      # Add steps to deploy your application to AWS
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-s3-bucket: ${{ secrets.AWS_S3_BUCKET }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+    
+    - name: Deploy to AWS S3
+      run: aws s3 sync . s3://github-action-workflow
